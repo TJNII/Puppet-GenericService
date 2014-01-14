@@ -16,6 +16,7 @@ class genericservice::apache(
   $manage_firewall = true,
   $ssl = false,
   $ssl_only = false,
+  $enable_ssl_vhost = true,
   ) {
   # Basic Apache2 module
   # Handles services, does not currently handle configs.
@@ -80,10 +81,12 @@ class genericservice::apache(
           notify  => Service['httpd'],
         }
 
-        file { '/etc/apache2/sites-enabled/default-ssl':
-          ensure => 'link',
-          target => '/etc/apache2/sites-available/default-ssl',
-          notify  => Service['httpd'],
+        if $enable_ssl_vhost == true {
+          file { '/etc/apache2/sites-enabled/default-ssl':
+            ensure => 'link',
+            target => '/etc/apache2/sites-available/default-ssl',
+            notify  => Service['httpd'],
+          }
         }
       }
 
